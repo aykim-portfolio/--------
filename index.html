@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>부동산 / 이사 날씨 대시보드</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <h1>🌤️ 기후 & 스마트 이사 대시보드</h1>
+            <p>나에게 맞는 동네 날씨와 이사 갈 집의 냉난방비를 시뮬레이션하세요.</p>
+            <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+                <button id="btn-sync-kma" class="badge-btn badge-green">📡 기상청 실시간 연동</button>
+                <button id="btn-sync-kepco" class="badge-btn badge-blue">⚡ 한전 빅데이터 연동</button>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn" data-target="fit-analyzer">나의 날씨 체질 진단기</button>
+            <button class="tab-btn active" data-target="cost-predictor">🔥 실감형 냉난방비 예측기</button>
+            <button class="tab-btn" data-target="solar-simulator">☀️ 태양광 시뮬레이터</button>
+        </nav>
+
+        <main>
+            <!-- 탭 1: 날씨 체질 진단기 -->
+            <section id="fit-analyzer" class="tab-content">
+                <div class="card layout-grid">
+                    <div class="input-panel">
+                        <h2>🌡️ 어떤 날씨를 선호하시나요?</h2>
+                        <p class="subtitle">슬라이더를 움직여 당신의 체질을 알려주세요.</p>
+                        
+                        <div class="slider-group">
+                            <label>기온 취향</label>
+                            <div class="slider-labels"><span>추운게 좋아요</span><span>더운게 좋아요</span></div>
+                            <input type="range" id="pref-temp" min="10" max="18" value="14" step="0.5">
+                        </div>
+
+                        <div class="slider-group">
+                            <label>습도 취향</label>
+                            <div class="slider-labels"><span>건조한게 좋아요</span><span>촉촉한게 좋아요</span></div>
+                            <input type="range" id="pref-humidity" min="55" max="75" value="65" step="1">
+                        </div>
+
+                        <div class="slider-group">
+                            <label>바람 취향</label>
+                            <div class="slider-labels"><span>잔잔한게 좋아요</span><span>바람부는게 좋아요</span></div>
+                            <input type="range" id="pref-wind" min="1" max="5" value="2.5" step="0.1">
+                        </div>
+
+                        <button id="btn-diagnose" class="primary-btn">진단하기</button>
+                    </div>
+
+                    <div class="result-panel">
+                        <div id="fit-result-empty" class="empty-state">
+                            <p>왼쪽에서 취향을 설정하고 진단하기 버튼을 눌러주세요.</p>
+                        </div>
+                        <div id="fit-result-content" class="hidden">
+                            <h2 class="highlight-text">"당신은 <span id="best-match-city">00</span> 체질입니다!"</h2>
+                            
+                            <div class="score-board">
+                                <div class="score-item">
+                                    <span>기후 일치율</span>
+                                    <strong id="match-percentage" class="text-emerald">0%</strong>
+                                </div>
+                                <div class="score-item">
+                                    <span>피해야 할 지역</span>
+                                    <strong id="worst-match-city" class="text-rose">00</strong>
+                                </div>
+                            </div>
+
+                            <p id="match-description" class="match-desc"></p>
+                            
+                            <div class="tip-card">
+                                💡 <strong>거주 꿀팁:</strong> <span id="lifestyle-tip">팁 내용이 여기에 표시됩니다.</span>
+                            </div>
+
+                            <div class="chart-container-radar">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 2: 실감형 예측기 -->
+            <section id="cost-predictor" class="tab-content active">
+                <div class="card layout-grid">
+                    <div class="input-panel">
+                        <h2>비교 조건 입력</h2>
+                        
+                        <div class="map-ui-container">
+                            <p class="map-instruction">🗺️ 지도에서 두 지역을 클릭하여 선택하세요</p>
+                            <div class="korea-map-grid" id="korea-map">
+                                <div class="map-node node-seoul" data-region="Seoul">서울</div>
+                                <div class="map-node node-chuncheon" data-region="Chuncheon">춘천</div>
+                                <div class="map-node node-gangneung" data-region="Gangneung">강릉</div>
+                                <div class="map-node node-gwangju" data-region="Gwangju">광주</div>
+                                <div class="map-node node-busan" data-region="Busan">부산</div>
+                                <div class="map-node node-jeju" data-region="Jeju">제주</div>
+                            </div>
+                        </div>
+
+                        <div class="region-selector">슬라이더를 움직여 당신의 체질을 알려주세요.</p>
+                        
+                        <div class="slider-group">
+                            <label>기온 취향</label>
+                            <div class="slider-labels"><span>추운게 좋아요</span><span>더운게 좋아요</span></div>
+                            <input type="range" id="pref-temp" min="10" max="18" value="14" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="result-panel advanced-result">
+                        <div id="cost-result-empty" class="empty-state">
+                            <p>좌측에서 조건을 설정하고 시뮬레이션 버튼을 눌러주세요.</p>
+                        </div>
+                        
+                        <div id="cost-result-content" class="hidden">
+                            <div class="summary-card">
+                                <h3>💡 10년 거주 시 누적 냉난방비 차이</h3>
+                                <p class="diff-amount" id="ten-year-diff-text">0원</p>
+                            </div>
+
+                            <div class="charts-grid">
+                                <div class="chart-box">
+                                    <h4>연간 냉난방비 비율</h4>
+                                    <canvas id="stackedBarChart"></canvas>
+                                </div>
+                                
+                                <div class="chart-box">
+                                    <div class="chart-wrapper">
+                                    <h3>월별 지출 패턴 예측</h3>
+                                    <canvas id="monthlyLineChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <div id="insight-cards" class="insight-grid hidden">
+                                <div class="insight-card esg-card">
+                                    <h3>🌲 친환경 이사 지수</h3>
+                                    <p id="esg-result-text">두 지역 간 요금 차이가 없어 탄소 배출량이 동일합니다.</p>
+                                </div>
+                                <div class="insight-card roi-card">
+                                    <h3>💰 단열 공사 본전 뽑기</h3>
+                                    <p id="roi-result-text">신축 등급이므로 단열 공사가 필요 없습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 3: 태양광 수익성 시뮬레이터 -->
+            <section id="solar-simulator" class="tab-content">
+                <div class="card layout-grid">
+                    <div class="input-panel">
+                        <h2>☀️ 태양광 패널 수익성 분석</h2>
+                        <p class="mb-2" style="font-size:0.9rem; color:var(--text-secondary);">해당 지역의 기상청 일조량 데이터를 바탕으로, 태양광 패널 설치 시 얼마만에 본전을 뽑는지 계산합니다.</p>
+                        
+                        <div class="input-group mt-2">
+                            <label>설치 지역</label>
+                            <select id="solar-region" class="glass-select">
+                                <option value="Seoul">서울</option>
+                                <option value="Busan">부산</option>
+                                <option value="Jeju">제주</option>
+                                <option value="Gangneung">강릉</option>
+                                <option value="Chuncheon">춘천</option>
+                                <option value="Gwangju">광주</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>태양광 설비 용량 (kW)</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="solar-capacity" min="1" max="10" step="1" value="3">
+                                <span id="solar-capacity-val" class="range-val">3 kW</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>패널 설치비용 (만원)</label>
+                            <div class="range-wrapper">
+                                <input type="range" id="solar-cost" min="200" max="1500" step="50" value="500">
+                                <span id="solar-cost-val" class="range-val">500 만원</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-calc-solar" class="primary-btn mt-2">☀️ 태양광 효율 계산하기</button>
+                    </div>
+
+                    <div class="result-panel">
+                        <div id="solar-result-empty" class="empty-state">조건을 입력하고 계산을 눌러주세요.</div>
+                        <div id="solar-result-content" class="hidden" style="width:100%; text-align:center;">
+                            <h2 class="highlight-text" id="solar-summary-text">0년 만에 본전을 뽑습니다!</h2>
+                            <p class="match-desc" id="solar-detail-text"></p>
+                            
+                            <div class="chart-container-solar" style="height:300px; margin-top:2rem; position:relative;">
+                                <canvas id="solarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
