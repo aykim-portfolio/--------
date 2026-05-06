@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>부동산 / 이사 날씨 대시보드</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <title>부동산 / 이사 날씨 대시보드 by Ahyoung</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="background-orbs">
         <div class="orb orb-1"></div>
@@ -38,7 +41,7 @@
                     <div class="input-panel">
                         <h2>🌡️ 어떤 날씨를 선호하시나요?</h2>
                         <p class="subtitle">슬라이더를 움직여 당신의 체질을 알려주세요.</p>
-                        
+
                         <div class="slider-group">
                             <label>기온 취향</label>
                             <div class="slider-labels"><span>추운게 좋아요</span><span>더운게 좋아요</span></div>
@@ -66,7 +69,7 @@
                         </div>
                         <div id="fit-result-content" class="hidden">
                             <h2 class="highlight-text">"당신은 <span id="best-match-city">00</span> 체질입니다!"</h2>
-                            
+
                             <div class="score-board">
                                 <div class="score-item">
                                     <span>기후 일치율</span>
@@ -79,7 +82,7 @@
                             </div>
 
                             <p id="match-description" class="match-desc"></p>
-                            
+
                             <div class="tip-card">
                                 💡 <strong>거주 꿀팁:</strong> <span id="lifestyle-tip">팁 내용이 여기에 표시됩니다.</span>
                             </div>
@@ -97,7 +100,7 @@
                 <div class="card layout-grid">
                     <div class="input-panel">
                         <h2>비교 조건 입력</h2>
-                        
+
                         <div class="map-ui-container">
                             <p class="map-instruction">🗺️ 지도에서 두 지역을 클릭하여 선택하세요</p>
                             <div class="korea-map-grid" id="korea-map">
@@ -111,51 +114,51 @@
                         </div>
 
                         <div class="region-selector">슬라이더를 움직여 당신의 체질을 알려주세요.</p>
-                        
-                        <div class="slider-group">
-                            <label>기온 취향</label>
-                            <div class="slider-labels"><span>추운게 좋아요</span><span>더운게 좋아요</span></div>
-                            <input type="range" id="pref-temp" min="10" max="18" value="14" step="0.5">
-                        </div>
-                    </div>
 
-                    <div class="result-panel advanced-result">
-                        <div id="cost-result-empty" class="empty-state">
-                            <p>좌측에서 조건을 설정하고 시뮬레이션 버튼을 눌러주세요.</p>
+                            <div class="slider-group">
+                                <label>기온 취향</label>
+                                <div class="slider-labels"><span>추운게 좋아요</span><span>더운게 좋아요</span></div>
+                                <input type="range" id="pref-temp" min="10" max="18" value="14" step="0.5">
+                            </div>
                         </div>
-                        
-                        <div id="cost-result-content" class="hidden">
-                            <div class="summary-card">
-                                <h3>💡 10년 거주 시 누적 냉난방비 차이</h3>
-                                <p class="diff-amount" id="ten-year-diff-text">0원</p>
+
+                        <div class="result-panel advanced-result">
+                            <div id="cost-result-empty" class="empty-state">
+                                <p>좌측에서 조건을 설정하고 시뮬레이션 버튼을 눌러주세요.</p>
                             </div>
 
-                            <div class="charts-grid">
-                                <div class="chart-box">
-                                    <h4>연간 냉난방비 비율</h4>
-                                    <canvas id="stackedBarChart"></canvas>
+                            <div id="cost-result-content" class="hidden">
+                                <div class="summary-card">
+                                    <h3>💡 10년 거주 시 누적 냉난방비 차이</h3>
+                                    <p class="diff-amount" id="ten-year-diff-text">0원</p>
                                 </div>
-                                
-                                <div class="chart-box">
-                                    <div class="chart-wrapper">
-                                    <h3>월별 지출 패턴 예측</h3>
-                                    <canvas id="monthlyLineChart"></canvas>
-                                </div>
-                            </div>
-                            
-                            <div id="insight-cards" class="insight-grid hidden">
-                                <div class="insight-card esg-card">
-                                    <h3>🌲 친환경 이사 지수</h3>
-                                    <p id="esg-result-text">두 지역 간 요금 차이가 없어 탄소 배출량이 동일합니다.</p>
-                                </div>
-                                <div class="insight-card roi-card">
-                                    <h3>💰 단열 공사 본전 뽑기</h3>
-                                    <p id="roi-result-text">신축 등급이므로 단열 공사가 필요 없습니다.</p>
+
+                                <div class="charts-grid">
+                                    <div class="chart-box">
+                                        <h4>연간 냉난방비 비율</h4>
+                                        <canvas id="stackedBarChart"></canvas>
+                                    </div>
+
+                                    <div class="chart-box">
+                                        <div class="chart-wrapper">
+                                            <h3>월별 지출 패턴 예측</h3>
+                                            <canvas id="monthlyLineChart"></canvas>
+                                        </div>
+                                    </div>
+
+                                    <div id="insight-cards" class="insight-grid hidden">
+                                        <div class="insight-card esg-card">
+                                            <h3>🌲 친환경 이사 지수</h3>
+                                            <p id="esg-result-text">두 지역 간 요금 차이가 없어 탄소 배출량이 동일합니다.</p>
+                                        </div>
+                                        <div class="insight-card roi-card">
+                                            <h3>💰 단열 공사 본전 뽑기</h3>
+                                            <p id="roi-result-text">신축 등급이므로 단열 공사가 필요 없습니다.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
             </section>
 
             <!-- 탭 3: 태양광 수익성 시뮬레이터 -->
@@ -163,8 +166,9 @@
                 <div class="card layout-grid">
                     <div class="input-panel">
                         <h2>☀️ 태양광 패널 수익성 분석</h2>
-                        <p class="mb-2" style="font-size:0.9rem; color:var(--text-secondary);">해당 지역의 기상청 일조량 데이터를 바탕으로, 태양광 패널 설치 시 얼마만에 본전을 뽑는지 계산합니다.</p>
-                        
+                        <p class="mb-2" style="font-size:0.9rem; color:var(--text-secondary);">해당 지역의 기상청 일조량 데이터를 바탕으로,
+                            태양광 패널 설치 시 얼마만에 본전을 뽑는지 계산합니다.</p>
+
                         <div class="input-group mt-2">
                             <label>설치 지역</label>
                             <select id="solar-region" class="glass-select">
@@ -201,8 +205,9 @@
                         <div id="solar-result-content" class="hidden" style="width:100%; text-align:center;">
                             <h2 class="highlight-text" id="solar-summary-text">0년 만에 본전을 뽑습니다!</h2>
                             <p class="match-desc" id="solar-detail-text"></p>
-                            
-                            <div class="chart-container-solar" style="height:300px; margin-top:2rem; position:relative;">
+
+                            <div class="chart-container-solar"
+                                style="height:300px; margin-top:2rem; position:relative;">
                                 <canvas id="solarChart"></canvas>
                             </div>
                         </div>
@@ -215,4 +220,5 @@
     <script src="data.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
